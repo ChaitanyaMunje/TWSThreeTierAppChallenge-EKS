@@ -109,6 +109,11 @@ kubectl delete -f .
 ``` shell
 curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
 aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json
+
+aws iam attach-role-policy \
+--role-name AmazonEKSLoadBalancerControllerRole \
+--policy-arn arn:aws:iam::017263836376:policy/AWSLoadBalancerControllerIAMPolicy
+
 eksctl utils associate-iam-oidc-provider --region=ap-south-1 --cluster=three-tier-demo-cluster --approve
 eksctl create iamserviceaccount --cluster=three-tier-demo-cluster --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::017263836376:policy/AWSLoadBalancerControllerIAMPolicy --approve --region=ap-south-1
 ```
