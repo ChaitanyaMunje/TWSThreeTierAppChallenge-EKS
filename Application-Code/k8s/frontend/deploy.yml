@@ -29,6 +29,6 @@ spec:
         imagePullPolicy: Always
         env:
           - name: REACT_APP_BACKEND_URL
-            value: "http://techbfl.in/api/tasks"
+            value: "http://challange.techbfl.in/api/tasks"
         ports:
         - containerPort: 3000
