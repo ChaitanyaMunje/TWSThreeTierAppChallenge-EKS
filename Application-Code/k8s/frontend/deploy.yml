@@ -1,32 +1,30 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: frontend
+  name: mainlb
   namespace: three-tier
-  labels:
-    role: frontend
-    env: demo
-spec: 
-  replicas: 1
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 25%
-  selector:
-    matchLabels: 
-      role: frontend
-  template:
-    metadata:
-      labels:
-        role: frontend
-    spec: 
-      containers:
-      - name: frontend
-        image: public.ecr.aws/x6m6m8r8/3-tier-app-frontend:latest
-        imagePullPolicy: Always
-        env:
-          - name: REACT_APP_BACKEND_URL
-            value: "http://challange.techbfl.in/api/tasks"
-        ports:
-        - containerPort: 3000
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+  - host: challange.techbfl.in
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: api
+            port:
+              number: 3500
+
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 3000
