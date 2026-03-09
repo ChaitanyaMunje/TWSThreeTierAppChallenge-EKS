@@ -21,8 +21,6 @@ spec:
       labels:
         role: api
     spec:
-      imagePullSecrets:
-      - name: ecr-registry-secret
       containers:
       - name: api
         image: public.ecr.aws/x6m6m8r8/3-tier-backend:latest

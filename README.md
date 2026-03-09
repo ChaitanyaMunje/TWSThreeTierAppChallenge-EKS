@@ -93,7 +93,7 @@ eksctl version
 
 ### Step 7: Setup EKS Cluster
 ``` shell
-eksctl create cluster --name three-tier-demo-cluster --region ap-south-1 --managed --nodes 2 --node-type t3.small
+eksctl create cluster --name three-tier-demo-cluster --region ap-south-1 --managed --nodes 2 --node-type t3.medium
 aws eks update-kubeconfig --region ap-south-1 --name three-tier-demo-cluster
 kubectl get nodes
 ```
@@ -113,6 +113,25 @@ aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-
 aws iam attach-role-policy \
 --role-name AmazonEKSLoadBalancerControllerRole \
 --policy-arn arn:aws:iam::017263836376:policy/AWSLoadBalancerControllerIAMPolicy
+
+
+Create an OIDC 
+eksctl utils associate-iam-oidc-provider \
+--cluster three-tier-demo-cluster> \
+--approve
+
+
+
+eksctl create iamserviceaccount \
+  --cluster=three-tier-demo-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::566849586744:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+
+
+
 
 eksctl utils associate-iam-oidc-provider --region=ap-south-1 --cluster=three-tier-demo-cluster --approve
 eksctl create iamserviceaccount --cluster=three-tier-demo-cluster --namespace=kube-system --name=aws-load-balancer-controller --role-name AmazonEKSLoadBalancerControllerRole --attach-policy-arn=arn:aws:iam::017263836376:policy/AWSLoadBalancerControllerIAMPolicy --approve --region=ap-south-1
